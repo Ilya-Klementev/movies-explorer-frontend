@@ -1,0 +1,137 @@
+.movies__search {
+  max-width: 1140px;
+  margin: 0 auto 80px auto;
+  padding-top: 70px;
+  padding-bottom: 43px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1.5px rgba(170, 170, 170, 0.2) solid;
+}
+
+.movies__search_border {
+  height: 72px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1.5px rgba(170, 170, 170, 0.2) solid;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 1fr 100px;
+}
+
+.movies__search_input {
+  background-color: transparent;
+  color: #fff;
+  outline: none;
+  border: none;
+  font-family: 'Inter';
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 0 20px;
+}
+
+.movies__search_button {
+  background-color:#4285F4;
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.movies__search_button:hover {
+  opacity: 80%;
+}
+
+.movies__search_switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  margin: 26px 0 0 0;
+}
+
+.movies__search_checkbox {display:none;}
+
+.movies__search_slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ebebeb;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.movies__search_slider:before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  left: 6px;
+  bottom: 6px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.movies__search_checkbox:checked + .movies__search_slider {
+  background-color: #2BE080;
+}
+
+.movies__search_checkbox:checked + .movies__search_slider:before {
+  transform: translateX(16px);
+  background-color: #fff;
+}
+
+.movies__search_round {
+  border-radius: 34px;
+}
+
+.movies__search_round:before {
+  border-radius: 50%;
+}
+
+.movies__search_span {
+  padding: 0 0 0 50px;
+  margin: 0;
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+@media screen and (max-width: 500px) {
+  .movies__search {
+    margin: 0 4px 50px 4px;
+    padding-bottom: 63px;
+  }
+
+  .movies__search_border {
+    grid-template-columns: calc(100% - 80px) 80px;
+    height: 56px;
+    padding: 6px;
+  }
+
+  .movies__search_input {
+    font-size: 16px;
+    line-height: 16px;
+    padding: 0 5px;
+  }
+
+  .movies__search_switch {
+    margin: 30px 0 0 0;
+  }
+
+  .movies__search_span {
+    padding: 0 0 0 48px;
+    font-size: 11px;
+
+  }
+}

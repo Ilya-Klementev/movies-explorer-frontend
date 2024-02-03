@@ -1,0 +1,167 @@
+.main__aboutme {
+  background: #202020;
+  padding: 0 75px;
+  height: 554px;
+  padding-bottom: 101px;
+}
+
+.main__aboutme_title {
+  margin-bottom: 66px !important;
+}
+
+.main__aboutme_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.main__aboutme_information {
+  max-width: 590px;
+  padding-right: 40px;
+  height: 327px;
+  position: relative;
+}
+
+.main__aboutme_name {
+  margin: 0;
+  padding: 0 0 18px 0;
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 50px;
+  line-height: 58px;
+  font-weight: 400;
+  letter-spacing: -2.1px;
+}
+
+.main__aboutme_profession {
+  margin: 0;
+  padding: 0 0 26px 0;
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.main__aboutme_history {
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+.main__aboutme_gitlink {
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 14px;
+  line-height: 16.94px;
+  font-weight: 500;
+  text-decoration: none;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.main__aboutme_gitlink:hover {
+  opacity: 70%;
+}
+
+.main__aboutme_photo {
+  border-radius: 10px;
+  width: 270px;
+  height: 327px;
+}
+
+@media screen and (max-width: 880px) {
+  .main__aboutme {
+    padding: 0 50px;
+    height: 513px;
+    padding-bottom: 91px;
+  }
+ 
+  .main__aboutme_information {
+    min-height: 307px;
+    padding-right: 49px;
+    height: 0;
+  }
+
+  .main__aboutme_name {
+    font-size: 40px;
+    line-height: 40px;
+    padding: 0 0 16px 0;
+  }
+
+  .main__aboutme_profession {
+    padding: 0 0 20px 0;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .main__aboutme_history {
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .main__aboutme_photo {
+    width: 255px;
+    height: 307px;
+  }
+} 
+
+
+@media screen and (max-width: 624px) {
+  .main__aboutme {
+    padding: 0 14px;
+    height: 100%;
+  }
+
+  .main__aboutme_title {
+    margin-bottom: 58px !important;
+    letter-spacing: -0.7px !important;; 
+  }
+
+  .main__aboutme_container {
+    flex-direction: column-reverse;
+    gap: 40px;
+    padding-bottom: 70px;
+  }
+
+  .main__aboutme_name {
+    font-size: 30px;
+    line-height: 36.31px;
+    padding: 0 0 19px 0;
+    letter-spacing: -1.3px;
+  }
+
+  .main__aboutme_profession {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .main__aboutme_history {
+    font-size: 11px;
+    line-height: 16px;
+    padding-bottom: 40px;
+  }
+
+  .main__aboutme_information {
+    width: 100%;
+    padding-right: 0;
+    height: 100%;
+    min-height: auto;
+  }
+
+  .main__aboutme_photo {
+    width: 100%;
+    height: 100%;
+  }
+
+  .main__aboutme_gitlink {
+    position: relative;
+  }
+} 

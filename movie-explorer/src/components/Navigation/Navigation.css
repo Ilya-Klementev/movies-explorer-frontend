@@ -1,0 +1,231 @@
+.navigation__container_auth {
+  display: grid;
+}
+
+.navigation__nav-links { 
+  margin: 0;
+  padding: 0;
+  margin-right: 20px;
+  font-family: Inter;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #fff;
+  text-decoration: none;
+}
+
+.navigation__nav-links_container { 
+  margin-top: 0;
+}
+.navigation__nav-menu {
+  display: none;
+  width: 44px;
+  height: 44px;
+  background-color: #073042;
+  background-image: url(../../images/nav.svg);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+}
+
+.navigation__container_profile {
+  display: flex;
+  margin-left: 30px;
+  height: 32px;
+  padding: 0;
+  font-family: Inter;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.navigation__profile_icon {
+  margin-left: 13px;
+  background-color:#0F4157;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.navigation__profile_icon-darkmode {
+  background-color:#313131;
+}
+
+.navigation__nav-links_main {
+  display: none;
+}
+
+.navigation__nav-menu_close {
+  display: none;
+  cursor: pointer;
+}
+
+.navigation__nav-link_active{
+  font-weight: 500;
+}
+
+.navigation__unlogged {
+  display: flex;
+  gap: 30px;
+}
+
+.navigation__unlogged_signup {
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  font-family: Inter;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.navigation__unlogged_signin {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #3DDC84;
+  width: 76px;
+  height: 32px;
+  border-radius: 3px;
+  border: none;
+  color: #000;
+  font-family: Inter;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 880px) {
+  .navigation__nav-menu {
+    display: block;
+    cursor: pointer;
+  }
+
+  .navigation__nav-menu_darkmode {
+    background-color: #202020;
+  }
+
+  .navigation__nav-links_main {
+    display: block;
+  }
+
+  .navigation__container_logged { 
+    height: 100%;
+    display: grid;
+    grid-auto-flow: row;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 67.71%;
+    max-width: 520px;
+    min-width: 320px;
+    background-color: #202020;
+    box-sizing: border-box;
+    z-index: 1000;
+    justify-content: center;
+    align-content: space-between;
+    transform: translateX(100%);
+  }
+
+  .navigation__background_active {
+    background-color: rgba(0, 0, 0, 0.3); 
+    transition: background-color 0.2s ease-in-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 900;
+  }
+
+  .navigation__container_nav-menu_active {
+    transform: translate(0%);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .navigation__nav-menu_close {
+    display: block;
+    width: 28px;
+    height: 28px;
+    background-color: #202020;
+    background-image: url(../../images/close.svg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    z-index: 2000;
+    position: fixed;
+    right: 24px;
+    top: 24px;
+  }
+
+  .navigation__nav-links-container_active {
+    display: grid;
+    grid-auto-flow: row; 
+    margin-top: 159px;
+  }
+
+  .navigation__profile_icon {
+    background-color:#313131;
+    padding: 9px;
+  }
+
+  .navigation__container_profile {
+    background-color: transparent;
+    margin-bottom: 92px;
+    margin-left: auto;
+  }
+
+  .navigation__nav-links { 
+    margin-right: 0;
+    font-family: Inter;
+    font-size: 18px;
+    line-height: 21.78px;
+    font-weight: 500;
+    justify-self: center;
+    padding: 4px 0;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+
+  .navigation__nav-link_active{
+    border-bottom: 2px solid #FFF; 
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .navigation__nav-links-container_active {
+    margin-top: 144px;
+  }
+
+  .navigation__container_profile {
+    margin-bottom: 48px;
+  }
+
+  .navigation__unlogged {
+    gap: 14px;
+  }
+
+  .navigation__unlogged_signup {
+    font-size: 10px;
+  }
+  
+  .navigation__unlogged_signin {
+    width: 54px;
+    height: 26px;
+    font-size: 10px;
+  }
+
+  .navigation__nav-menu {
+    width: 40px;
+    height: 43px;
+  }
+}
