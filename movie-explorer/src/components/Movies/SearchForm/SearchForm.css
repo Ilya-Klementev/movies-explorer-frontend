@@ -8,7 +8,7 @@
   border-bottom: 1.5px rgba(170, 170, 170, 0.2) solid;
 }
 
-.movies__search_border {
+.movies__search_form {
   height: 72px;
   padding: 10px;
   box-sizing: border-box;
@@ -16,6 +16,10 @@
   border-radius: 8px;
   display: grid;
   grid-template-columns: 1fr 100px;
+}
+
+.movies__search_form:focus-within {
+  border: 1px #4285F4 solid;
 }
 
 .movies__search_input {
@@ -113,7 +117,7 @@
     padding-bottom: 63px;
   }
 
-  .movies__search_border {
+  .movies__search_form {
     grid-template-columns: calc(100% - 80px) 80px;
     height: 56px;
     padding: 6px;

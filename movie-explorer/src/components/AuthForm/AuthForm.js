@@ -21,13 +21,16 @@ function AuthForm( props ) {
       </div>
       <form className="auth__form" onSubmit={ props.onSubmit }>
         <div className="auth__inputs_container">
-          { props.name && (<><span className="auth__form_span">Имя</span>
-          <input 
-            className="auth__form_input" 
-            type="text" 
-            required
-          ></input>
-          <span className="auth__form_error">Ошибка</span> </>)}
+          { props.name && (
+          <>
+            <span className="auth__form_span">Имя</span>
+            <input 
+              className="auth__form_input" 
+              type="text" 
+              required
+            ></input>
+            <span className="auth__form_error">Ошибка</span> 
+          </>)}
           <span className="auth__form_span">E-mail</span>
           <input 
             className="auth__form_input" 
@@ -45,7 +48,11 @@ function AuthForm( props ) {
         </div>
         <div className="auth__buttons_container">
           <span className="auth__form_server-error">Ошибка сервера</span>
-          <button className="auth__form_submit" type="submit">{ props.submit }</button>
+          <button 
+            className="auth__form_submit" 
+            type="submit"
+            >{ props.submit }
+          </button>
           <span className="auth__buttons_span">
             { props.spanLink }
             <NavLink 
