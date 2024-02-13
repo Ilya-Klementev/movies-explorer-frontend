@@ -3,3 +3,5 @@ https://www.figma.com/file/6FMWkB94wE7KTkcCgUXtnC/Дипломный-проек�
 
 https://api.movieshub.nomoredomainsmonster.ru - api
 https://moviehub.nomoredomainswork.ru - frontend
+
+https://github.com/Ilya-Klementev/movies-explorer-frontend/pull/2 - пул реквест
