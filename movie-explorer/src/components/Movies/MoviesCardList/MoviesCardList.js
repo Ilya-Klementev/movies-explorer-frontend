@@ -1,45 +1,69 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import MoviesCard from '../MoviesCard/MoviesCard';
-import Preloader from '../Preloader/Preloader';
 
-function MoviesCardList( props ) {
-  const [isPreloader, setIsPreloader] = useState(false);
-  const [moviesCards, setMoviesCards] = useState(Array.from({ length: props.length }));
+function MoviesCardList(props) {
+  const { 
+    movies, 
+    isCountDisplayedMovies, 
+    isInitialPage, 
+    error, 
+    onAddCards, 
+    onSaveMovie, 
+    savedMovies, 
+    onDeleteMovie
+  } = props;
 
-  //Проверка работы прелоадера:
-  async function addMoreCard() {
-    setIsPreloader(true);
-    try {
-      const newMovies = await fetchNewMovies(); 
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setMoviesCards(prevMovies => [...prevMovies, ...newMovies]);
-    } catch (error) {
-      console.error('Ошибка добавления новых карточек:', error);
-    } finally {
-      setIsPreloader(false);
+  const location = useLocation();
+
+  const renderMovies = useMemo(() => {
+    if (error) {
+      return <h2 className="movies__cardlist_nothing">{error}</h2>;
     }
-  }
+  
+    if (movies.length < 1 && isInitialPage === false) {
+      return <h2 className="movies__cardlist_nothing">Ничего не найдено</h2>;
+    }
+    if (location.pathname === '/movies') {
+      return movies.slice(0, isCountDisplayedMovies).map((movie) => {
+      const isSaved = savedMovies.some(savedMovie => savedMovie.movieId === movie.movieId);
+  
+        return (
+          <MoviesCard 
+            key={movie.movieId} 
+            movie={movie} 
+            onSaveMovie={onSaveMovie} 
+            onDeleteMovie={onDeleteMovie} 
+            isSaved={isSaved}
+            savedMovies={savedMovies}
+          />
+        );
+      });
+    } else {
+      return savedMovies.map((movie) => (
+        <MoviesCard key={movie.movieId} movie={movie} onDeleteMovie={onDeleteMovie} />
+      ));
+    }
+  
+  }, [error, movies, isInitialPage, isCountDisplayedMovies, location.pathname, savedMovies]);
+  
 
-  async function fetchNewMovies() {
-    return Array.from({ length: 6 });
+  function handleAddCard() {
+    onAddCards();
   }
-
 
   return (
     <>
       <div className="movies__cardlist">
-        {moviesCards.map(() => (
-          <MoviesCard {...props}/>
-        ))}
+        {renderMovies}
       </div>
-      {isPreloader && <Preloader />}
-      {props.savedPage ? "" :
-      <button
-        className="movies__cardlist_more"
-        onClick={addMoreCard}
-      >
-        Еще
-      </button>}
+      { (location.pathname !== '/movies') || (movies.length <= (isCountDisplayedMovies)) ? "" :
+        <button
+          className="movies__cardlist_more"
+          onClick={ handleAddCard }
+        >
+          Еще
+        </button>}
     </>
   );
 }
