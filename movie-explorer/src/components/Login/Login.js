@@ -1,7 +1,14 @@
 import React, { useEffect } from 'react';
 import AuthForm from '../AuthForm/AuthForm';
 
-function Login({ options, onSubmit, serverErrorMessage }) {
+function Login(props) {
+  const {
+    options, 
+    onSubmit, 
+    serverErrorMessage, 
+    isRequestProgress 
+  } = props;
+
 
   useEffect(() => {
     options(false, false, true);
@@ -20,6 +27,7 @@ function Login({ options, onSubmit, serverErrorMessage }) {
     linkTo: "/signup",
     onSubmit: handleSubmit,
     serverErrorMessage: serverErrorMessage,
+    isRequestProgress,
   };
 
   return (

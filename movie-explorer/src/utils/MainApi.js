@@ -1,4 +1,4 @@
-import  { adressMainServer }  from './constants';
+import  { ADRESS_MAIN_SERVER }  from './constants';
 
 class MainApi {
   constructor(adressServer) {
@@ -90,5 +90,5 @@ class MainApi {
   }
 }   
 
-const api = new MainApi( adressMainServer );
+const api = new MainApi( ADRESS_MAIN_SERVER );
 export { api }

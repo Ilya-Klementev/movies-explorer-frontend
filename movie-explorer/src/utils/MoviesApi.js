@@ -1,4 +1,4 @@
-import  { adressMoviesServer }  from './constants';
+import  { ADRESS_MOVIES_SERVER }  from './constants';
 
 class Api {
   constructor(adressServer) {
@@ -15,10 +15,10 @@ class Api {
   }
  
   getMovies() {
-    return fetch(`${this._adressServer}/beatfilm-movies`, { headers: this._headers })
+    return fetch(`${ this._adressServer }/beatfilm-movies`, { headers: this._headers })
     .then(this._handleResponse);
   }
 }   
 
-const apiMovies = new Api( adressMoviesServer );
+const apiMovies = new Api( ADRESS_MOVIES_SERVER );
 export { apiMovies }

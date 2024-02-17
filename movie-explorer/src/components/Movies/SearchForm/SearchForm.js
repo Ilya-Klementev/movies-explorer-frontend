@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { REGEX_SAERCH_FORM } from '../../../utils/constants';
 
-function SearchForm({ onSubmit, onSaveSubmit, stateChecked, onCheckboxMovies, onCheckboxSavedMovies }) {
+function SearchForm( props ) {
+  const {
+    onSubmit, 
+    onCheckChange,
+    searchQuery,
+    setSearchQuery,
+    isChecked,
+    setIsChecked,
+    stateSearchedMovies,
+    isPreloader,
+  } = props;
+  
   const location = useLocation();
-  const [searchQuery, setSearchQuery] = useState('');
   const [errorQuery, setErrorQuery] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [isChecked, setIsChecked] = useState(stateChecked);
 
-  useEffect(() => {
-    if (localStorage.getItem('stateSearchedMovies') && location.pathname === '/movies')  {
-      const stateSearchedMovies = JSON.parse(localStorage.getItem('stateSearchedMovies'));
-      setSearchQuery(stateSearchedMovies.lastQuery);
-    }
-  }, []);
-   
-  const handleInputChange = (e) => {
+  function handleInputChange (e) {
     setSearchQuery(e.target.value);
-    const nameRegex = /\S/;
+    const nameRegex = REGEX_SAERCH_FORM;
     if (!nameRegex.test(e.target.value)) {
       setIsButtonDisabled (true);
       setErrorQuery('Поле ввода не может быть пустым');
@@ -27,47 +30,51 @@ function SearchForm({ onSubmit, onSaveSubmit, stateChecked, onCheckboxMovies, on
     }
   };
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+  function handleCheckboxChange() {
+    if(location.pathname === '/movies') {
+      setIsChecked((prevIsChecked) => {
+        const newIsChecked = !prevIsChecked;
+        stateSearchedMovies.isChecked = newIsChecked;
+        handleCheckbox(newIsChecked);
+        return newIsChecked;
+      });
+      localStorage.setItem('stateSearchedMovies', JSON.stringify(stateSearchedMovies));
+    } else {
+      setIsChecked(!isChecked);
+    }
   };
 
-  useEffect(() => {
-    if(location.pathname === '/movies') {
-      onCheckboxMovies(isChecked);
-    } else {
-      onCheckboxSavedMovies(isChecked, searchQuery);
-    }
-  }, [isChecked]);
-   
+  function handleCheckbox(isChecked) {
+    onCheckChange(isChecked);
+  }
 
   function handleSubmit (e) {
+
     e.preventDefault();
     if (searchQuery==='') {
       setErrorQuery('Поле ввода не может быть пустым');
     } else {
-      if (location.pathname === '/movies') {
-        onSubmit(searchQuery, isChecked)
-      } else {
-        onSaveSubmit(searchQuery, isChecked)
-      }
+    onSubmit(searchQuery, isChecked);
     }
-  };
+
+  }; 
 
   return (
     <div className="movies__search">
-      <form className="movies__search_form" type="form" onSubmit={ handleSubmit } noValidate>
+      <form className="movies__search_form" type="form" name="searchForm"onSubmit={ handleSubmit } noValidate>
         <input 
           className="movies__search_input"
           type="text"
           onChange={handleInputChange}
           value={searchQuery}
           placeholder="Фильм" 
+          disabled = {isPreloader}
           required>
         </input>
         <button 
           className="movies__search_button" 
           type="submit"
-          disabled={isButtonDisabled}
+          disabled={isButtonDisabled || isPreloader}
           >Поиск
         </button>
       </form>

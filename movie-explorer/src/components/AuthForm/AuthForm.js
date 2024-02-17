@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import validator from 'validator';
+import { REGEX_NAME } from '../../utils/constants';
 
 function AuthForm( props ) {
-  const { title, isName, submitText, spanLink, linkTo, link, onSubmit, serverErrorMessage } = props;
-  const navigate = useNavigate();
+  const { 
+    title, 
+    isName, 
+    submitText, 
+    spanLink, 
+    linkTo, 
+    link, 
+    onSubmit, 
+    serverErrorMessage, 
+    isRequestProgress,
+   } = props;
 
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,8 +35,7 @@ function AuthForm( props ) {
   
   function handleName(e) {
     setName(e.target.value);
-    const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s-]+$/;
-    if (!nameRegex.test(e.target.value)) {
+    if (!REGEX_NAME.test(e.target.value)) {
       setIsNameDirty(true);
       setErrorName('Имя может содержать только латиницу, кириллицу, пробел или дефис');
     } else if (e.target.value.length < 2 || e.target.value.length > 30) {
@@ -102,9 +112,10 @@ function AuthForm( props ) {
             <span className="auth__form_span">Имя</span>
             <input 
               name="name"
-              onChange={handleName}
+              onChange={ handleName }
               className="auth__form_input" 
               type="text"
+              disabled={ isRequestProgress }
               required
             ></input>
             <span className="auth__form_error">{ errorName }</span> 
@@ -112,28 +123,30 @@ function AuthForm( props ) {
           <span className="auth__form_span">E-mail</span>
           <input 
             name="email"
-            onChange={handleEmail}
+            onChange={ handleEmail }
             className="auth__form_input" 
             type="email" 
+            disabled={ isRequestProgress }
             required
           ></input>
           <span className="auth__form_error">{ errorEmail }</span>
           <span className="auth__form_span">Пароль</span>
           <input 
             name="password"
-            onChange={handlePassword}
+            onChange={ handlePassword }
             className="auth__form_input" 
             type="password" 
+            disabled={ isRequestProgress }
             required
           ></input>
           <span className="auth__form_error">{ errorPassword }</span>
         </div>
         <div className="auth__buttons_container">
-          {isVisibledError && <span className="auth__form_server-error">{serverErrorMessage}</span>}
+          {isVisibledError && <span className="auth__form_server-error">{ serverErrorMessage }</span>}
           <button 
             className={`auth__form_submit ${isButtonDisabled && 'auth__form_submit-disabled'}`}
             type="submit"
-            disabled={isButtonDisabled}
+            disabled={ isButtonDisabled || isRequestProgress }
             >{ submitText }
           </button>
           <span className="auth__buttons_span">

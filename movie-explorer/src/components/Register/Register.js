@@ -1,8 +1,13 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AuthForm from '../AuthForm/AuthForm';
 
-function Register({ options, onSubmit, serverErrorMessage }) {
+function Register(props) {
+  const {
+    options, 
+    onSubmit, 
+    serverErrorMessage, 
+    isRequestProgress,
+  } = props;
 
   useEffect(() => {
     options(false, false, true);
@@ -21,6 +26,7 @@ function Register({ options, onSubmit, serverErrorMessage }) {
     linkTo: "/signin",
     onSubmit: handleSubmit,
     serverErrorMessage: serverErrorMessage,
+    isRequestProgress,
   };
 
   return (

@@ -2,8 +2,18 @@ import React, { useContext, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import validator from 'validator';
+import { REGEX_NAME } from '../../utils/constants';
+import { errorMessages } from '../../utils/messages';
 
-function Profile({ options, onSubmit, serverErrorMessage, onLogout }) {
+function Profile(props) {
+  const {
+    options, 
+    onSubmit, 
+    serverErrorMessage, 
+    onLogout, 
+    isRequestProgress,
+  } = props;
+
   const navigate = useNavigate();
   const currentUser = useContext(CurrentUserContext);
   const [isEdited, setIsEdited] = useState(false);
@@ -24,14 +34,12 @@ function Profile({ options, onSubmit, serverErrorMessage, onLogout }) {
 
   function handleName(e) {
     setName(e.target.value);
-    const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s-]+$/;
-  
-    if (!nameRegex.test(e.target.value)) {
+    if (!REGEX_NAME.test(e.target.value)) {
       setIsNameDirty(true);
-      setErrorName('Имя может содержать только латиницу, кириллицу, пробел или дефис');
+      setErrorName(errorMessages.invalidRegError);
     } else if (e.target.value.length < 2 || e.target.value.length > 30) {
       setIsNameDirty(true);
-      setErrorName('Длина имени должна быть от 2 до 30 символов');
+      setErrorName(errorMessages.invalidLengthError);
     } else {
       setIsNameDirty(false);
       setErrorName('');
@@ -45,7 +53,7 @@ function Profile({ options, onSubmit, serverErrorMessage, onLogout }) {
       setErrorEmail ('');
     } else {
       setIsEmailDirty(true);
-      setErrorEmail ('Введите корректный адрес e-mail');
+      setErrorEmail (errorMessages.invalidEmailError);
     }
   }
 
@@ -98,12 +106,12 @@ function Profile({ options, onSubmit, serverErrorMessage, onLogout }) {
     setIsVisibledError(true);
   }
 
-  function goToSignIn() {
-    navigate('/signin');
+  function goToMainPage() {
+    navigate('/');
   }
 
   function handleLogout() {
-    onLogout(goToSignIn);
+    onLogout(goToMainPage);
   }
   
   return (
@@ -119,7 +127,7 @@ function Profile({ options, onSubmit, serverErrorMessage, onLogout }) {
               name="name"
               value={ name } 
               onChange={ handleName }
-              disabled={!isEdited}
+              disabled={!isEdited || isRequestProgress}
               ref={ nameInputRef }
               minLength="2"
               maxLength="30">
@@ -135,7 +143,7 @@ function Profile({ options, onSubmit, serverErrorMessage, onLogout }) {
               value={ email } 
               ref={ emailInputRef }
               onChange={ handleEmail }
-              disabled={!isEdited}>
+              disabled={!isEdited || isRequestProgress}>
             </input>
           </div>
           <span className="profile__error_input">{ errorEmail }</span>
@@ -156,7 +164,7 @@ function Profile({ options, onSubmit, serverErrorMessage, onLogout }) {
           <button 
             className={`profile__submit ${isSubmitDisabled && "profile__submit_disabled"}`}
             type="submit"
-            disabled = {isSubmitDisabled}
+            disabled = {isSubmitDisabled || isRequestProgress}
             >Сохранить
           </button>
           </div>

@@ -12,6 +12,9 @@ import SavedMovies from '../SavedMovies/SavedMovies';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
 import { api } from '../../utils/MainApi.js';
+import { apiMovies } from '../../../src/utils/MoviesApi';
+import { errorMessages, successMessages } from '../../utils/messages.js';
+import { editingMoviesObjects } from '../../utils/editMovieData.js';
 import './App.css';
 
 function App() {
@@ -21,7 +24,23 @@ function App() {
   const [loggedIn, setloggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [serverErrorMessage, setServerErrorMessage] = useState('');
-  const [savedMovies, setSavedMovies] = useState([]);
+  const [isPreloader, setIsPreloader] = useState(false);
+  const [isTextError, setIsTextError] = useState('');
+  const [allUpdatedMovies, setAllUpdatedMovies] = useState([]);
+  const [allSearchedMovies, setAllSearchedMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+  const [isRequestProgress, setIsRequestProgress] = useState(false);
+
+  const stateSearchedMovies = JSON.parse(localStorage.getItem('stateSearchedMovies')) || { 
+    allMovies: [], 
+    isAllMoviesFetched: false,
+    isSavedMoviesFetched: false,
+    lastSearchedMovies: [], 
+    isChecked: false, 
+    lastQuery: '',
+    isCountAddedMovies: 0,
+  };
 
   //шапка, подвал, цвет шапки
   const options = (setHeader, setFooter, setBackground) => {
@@ -42,7 +61,7 @@ function App() {
         setServerErrorMessage('');
       })
       .catch((err) => {
-        console.log(`Ошибка регистрации пользователя: ${err}`);
+        console.log(`${ errorMessages.regError }${ err }`);
         setServerErrorMessage(err);
       });
   }
@@ -58,7 +77,7 @@ function App() {
         setServerErrorMessage('');
       })
       .catch((err) => {
-        console.log(`Ошибка авторизации пользователя: ${err}`);
+        console.log(`${ errorMessages.authError }${ err }`);
         setServerErrorMessage(err);
       });
   }
@@ -74,7 +93,7 @@ function App() {
           setServerErrorMessage('');
         })
         .catch((err) => {
-          console.log(`Ошибка при проверке токена: ${err}`);
+          console.log(`${ errorMessages.tokenError }${ err }`);
           setServerErrorMessage(err);
           handleLogout();
         });
@@ -82,75 +101,117 @@ function App() {
   }
 
   function handlePatchProfile(newUserData) {
+    setIsRequestProgress(true);
     api
       .patchUserProfile(newUserData)
       .then((userData) => {
         const { _id, ...dataWithoutId } = userData;
         setCurrentUser(dataWithoutId);
-        setServerErrorMessage('Данные успешно обновлены!');
+        setServerErrorMessage(successMessages.patchProfileSuccess);
       })
       .catch((err) => {
-        console.log(`Ошибка при обновлении данных пользователя: ${err}`);
+        console.log(`${ errorMessages.patchProfileError }${ err }`);
         setServerErrorMessage(err);
-      });
+      })
+      .finally(() => setIsRequestProgress(false));
   }
 
-  function handleLogout(goToSignIn) {
+  function handleLogout(goToMainPage) {
     api
       .signOut()
       .then(() => {
-        localStorage.removeItem('jwt');
-        localStorage.removeItem('stateSearchedMovies');
+        localStorage.clear();
         setloggedIn(false);
-        goToSignIn();
+        goToMainPage();
       })
       .catch((err) => {
-        console.log(err);
-        localStorage.removeItem('jwt');
-        localStorage.removeItem('stateSearchedMovies');
+        console.log(`${ errorMessages.signOutError }${ err }`);
+        localStorage.clear();
         setloggedIn(false);
-        goToSignIn();
+        goToMainPage();
       });
   }
 
-  function handleSaveMovie(movie) {
-    api
-      .saveMovie(movie)
-      .then((data) => setSavedMovies([data, ...savedMovies]))
+  function getAllMovies() {
+    setIsPreloader(true);
+    apiMovies
+      .getMovies()
+      .then((movies) => {
+        setIsTextError('');
+        const updatedMovies = editingMoviesObjects(movies);
+        setAllUpdatedMovies(prevMovies => {
+          const uniqueMovies = updatedMovies.filter(newMovie => 
+            !prevMovies.some(existingMovie => existingMovie.movieId === newMovie.movieId)
+          );
+          return [...prevMovies, ...uniqueMovies];
+        });
+      })
       .catch((err) => {
-        console.log(`Ошибка при сохранении фильма: ${err}`);
-      });
+        console.log(`${ errorMessages.getMoviesError }${ err }`);
+        setIsTextError( errorMessages.serverErrorForUser )
+      })
+      .finally(() => setIsPreloader(false))
   }
 
   function getSavedMovies() {
     api
       .getSavedMovies()
       .then((dataMovies) => {
-        setSavedMovies(dataMovies);
+        setAllUpdatedMovies(dataMovies);
+        stateSearchedMovies.allMovies = dataMovies;
+        stateSearchedMovies.isSavedMoviesFetched = true;
+        localStorage.setItem('stateSearchedMovies', JSON.stringify(stateSearchedMovies));
       })
       .catch((err) => {
-        console.log(`Ошибка при получении сохраненных фильмов: ${err}`);
+        console.log(`${ errorMessages.getSavedMoviesError }${ err }`);
       });
+  }
+
+  function handleSaveMovie(mov) {
+    delete mov._id;
+    delete mov.owner;
+    api
+      .saveMovie(mov)
+      .then((movie) => {
+        stateSearchedMovies.allMovies = stateSearchedMovies.allMovies.map((m) => {
+          if (m.movieId === movie.movieId) {
+            m._id = movie._id;
+          }
+          return m;
+        })
+        localStorage.setItem('stateSearchedMovies', JSON.stringify(stateSearchedMovies));
+        setAllUpdatedMovies(stateSearchedMovies.allMovies);
+      })
+      .catch((err) => {
+        console.log(`${ errorMessages.saveMovieError }${ err }`);
+    });
   }
 
   function handleDeleteMovie(movie) {
     api
       .deleteMovie( movie )
-      .then(
-        setSavedMovies((state) => state.filter((m) => m._id !== movie._id))
-      )
+      .then(()=> {
+        stateSearchedMovies.allMovies = stateSearchedMovies.allMovies.map((m) => {
+          if (m.movieId === movie.movieId) {
+            return { ...m, _id: null };
+          }
+          return m;
+        });
+        localStorage.setItem('stateSearchedMovies', JSON.stringify(stateSearchedMovies));
+        setAllUpdatedMovies(stateSearchedMovies.allMovies);
+      })
       .catch((err) => {
-        console.log(`Ошибка при удалении фильма: ${err}`);
-      });
+        console.log(`${errorMessages.deleteMovieError}${ err }`);
+    });
   }
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
+    <CurrentUserContext.Provider value={ currentUser }>
       <div className="page">
         <BrowserRouter>
-          {showHeader && <Header darkHeaderBackground={darkBackground} loggedIn={loggedIn} />}
+          {showHeader && <Header darkHeaderBackground={ darkBackground } loggedIn={ loggedIn } />}
           <Routes>
-            <Route path="/" element={<Main options={options} />} />
+            <Route path="/" element={<Main options={ options } />} />
             <Route
               path="/signin"
               element={
@@ -158,9 +219,9 @@ function App() {
                   <Navigate to="/movies" />
                 ) : (
                   <Login
-                    onSubmit={handleAuthorization}
-                    options={options}
-                    serverErrorMessage={serverErrorMessage}
+                    onSubmit={ handleAuthorization }
+                    options={ options }
+                    serverErrorMessage={ serverErrorMessage }
                   />
                 )
               }
@@ -172,9 +233,9 @@ function App() {
                   <Navigate to="/movies" />
                 ) : (
                   <Register
-                    onSubmit={handleRegistration}
-                    options={options}
-                    serverErrorMessage={serverErrorMessage}
+                    onSubmit={ handleRegistration }
+                    options={ options }
+                    serverErrorMessage={ serverErrorMessage }
                   />
                 )
               }
@@ -183,40 +244,58 @@ function App() {
               path="/movies"
               element={
                 <ProtectedRoute 
-                  Component={ Movies } 
+                  element={ Movies } 
                   options={ options } 
                   loggedIn={ loggedIn } 
                   onSaveMovie={ handleSaveMovie }
-                  getSavedMovies={getSavedMovies}
-                  savedMovies={ savedMovies }
-                  onDeleteMovie={handleDeleteMovie}
-                  />}
+                  getSavedMovies={ getSavedMovies }
+                  onDeleteMovie={ handleDeleteMovie }
+                  handleGetAllMovies={ getAllMovies }
+                  isPreloader={ isPreloader }
+                  isTextError={ isTextError }
+                  searchQuery={ searchQuery }
+                  setSearchQuery={ setSearchQuery }
+                  isChecked={ isChecked }
+                  setIsChecked={ setIsChecked }
+                  stateSearchedMovies={ stateSearchedMovies}
+                  allSearchedMovies={ allSearchedMovies }
+                  setAllSearchedMovies={ setAllSearchedMovies }
+                  allUpdatedMovies={ allUpdatedMovies }
+                />}
             />
             <Route
               path="/saved-movies"
               element={
                 <ProtectedRoute 
-                  Component={ SavedMovies } 
+                  element={ SavedMovies } 
                   options={ options } 
                   loggedIn={ loggedIn } 
-                  onDeleteMovie={handleDeleteMovie}
-                  savedMovies={savedMovies}
+                  onDeleteMovie={ handleDeleteMovie }
+                  allUpdatedMovies={ allUpdatedMovies }
+                  searchQuery={ searchQuery }
+                  setSearchQuery={ setSearchQuery }
+                  isChecked={ isChecked }
+                  setIsChecked={ setIsChecked }
+                  stateSearchedMovies={ stateSearchedMovies }
+                  getSavedMovies={ getSavedMovies }
+                  isPreloader={ isPreloader }
                 />}
             />
             <Route
               path="/profile"
               element={
                 <ProtectedRoute
-                  Component={Profile}
-                  options={options}
-                  loggedIn={loggedIn}
-                  onSubmit={handlePatchProfile}
-                  serverErrorMessage={serverErrorMessage}
-                  onLogout={handleLogout}
+                  element={ Profile }
+                  options={ options }
+                  loggedIn={ loggedIn }
+                  onSubmit={ handlePatchProfile }
+                  serverErrorMessage={ serverErrorMessage }
+                  onLogout={ handleLogout }
+                  isRequestProgress={ isRequestProgress }
                 />
               }
             />
-            <Route path="*" element={<PageNotFound options={options} />} />
+            <Route path="*" element={<PageNotFound options={ options } />} />
           </Routes>
           {showFooter && <Footer />}
         </BrowserRouter>

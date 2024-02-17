@@ -2,8 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 function MoviesCard( props ) {
-  const { movie, onDeleteMovie, onSaveMovie, isSaved, savedMovies } = props;
-
+  const { movie, onDeleteMovie, onSaveMovie } = props;
   const location = useLocation();
 
   function countingDuration () {
@@ -12,13 +11,12 @@ function MoviesCard( props ) {
     const resultDuration = `${hours}ч ${minutes}м`;
     return resultDuration;
   }
-
+  
   function hundleSaveMovie () {
-    if (!isSaved) {
+    if (movie._id === null) {
       onSaveMovie(movie);
     } else {
-      const savedMovie = savedMovies.find((m) => m.movieId === movie.movieId)
-      onDeleteMovie(savedMovie);
+      onDeleteMovie(movie);
     }
   }
 
@@ -45,10 +43,10 @@ function MoviesCard( props ) {
         ></button>
         ) : (
         <button 
-          className={`movies__card_button ${isSaved ? 'movies__card_button-saved' : ''}`} 
+          className={`movies__card_button ${movie._id !== null ? 'movies__card_button-saved' : ''}`} 
           onClick={ hundleSaveMovie }
         >
-          {isSaved ? '' : 'Сохранить'}
+          {movie._id !== null ? '' : 'Сохранить'}
         </button>
       )}
 
