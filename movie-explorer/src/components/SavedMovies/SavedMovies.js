@@ -28,15 +28,17 @@ function SavedMovies( props ) {
 
   //получаем сохраненные фильмы
   useEffect(() => {
+    console.log(allUpdatedMovies);
     if (stateSearchedMovies.isSavedMoviesFetched === false ) {
       getSavedMovies();
     }
     setIsChecked(false);
     setSearchQuery('');
+    // setFilteredMovies(filterMovies());
   }, []);
 
   function filterMovies() {
-    const filtredMovies = allUpdatedMovies.filter(movie => movie._id !== null);
+    const filtredMovies = stateSearchedMovies.allMovies.filter(movie => movie._id !== null);
     return filtredMovies;
   }
 
