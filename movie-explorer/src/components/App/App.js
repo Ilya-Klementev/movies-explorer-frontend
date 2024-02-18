@@ -26,12 +26,10 @@ function App() {
   const [serverErrorMessage, setServerErrorMessage] = useState('');
   const [isPreloader, setIsPreloader] = useState(false);
   const [isTextError, setIsTextError] = useState('');
-  const [allUpdatedMovies, setAllUpdatedMovies] = useState([]);
   const [allSearchedMovies, setAllSearchedMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isRequestProgress, setIsRequestProgress] = useState(false);
-
   const stateSearchedMovies = JSON.parse(localStorage.getItem('stateSearchedMovies')) || { 
     allMovies: [], 
     isAllMoviesFetched: false,
@@ -41,6 +39,7 @@ function App() {
     lastQuery: '',
     isCountAddedMovies: 0,
   };
+  const [allUpdatedMovies, setAllUpdatedMovies] = useState(stateSearchedMovies.allMovies);
 
   //шапка, подвал, цвет шапки
   const options = (setHeader, setFooter, setBackground) => {
@@ -123,12 +122,15 @@ function App() {
         localStorage.clear();
         setloggedIn(false);
         goToMainPage();
+        window.location.reload(true); // добавил на всякий случай. это по поводу кнопки "еще". 
+                                      //просто у меня проблему воспроизвести не получилось. может это КЭШ, подумал я.
       })
       .catch((err) => {
         console.log(`${ errorMessages.signOutError }${ err }`);
         localStorage.clear();
         setloggedIn(false);
         goToMainPage();
+        window.location.reload(true); 
       });
   }
 

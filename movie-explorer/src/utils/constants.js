@@ -1,6 +1,5 @@
 const ADRESS_MOVIES_SERVER = 'https://api.nomoreparties.co';
 const ADRESS_MAIN_SERVER = 'https://api.movieshub.nomoredomainsmonster.ru';
-// 'http://localhost:3001';
 
 const SCREEN_SMALL = 320;
 const SCREEN_MEDIUM = 768;

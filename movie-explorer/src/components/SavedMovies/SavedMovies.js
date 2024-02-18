@@ -28,7 +28,6 @@ function SavedMovies( props ) {
 
   //получаем сохраненные фильмы
   useEffect(() => {
-    console.log(allUpdatedMovies);
     if (stateSearchedMovies.isSavedMoviesFetched === false ) {
       getSavedMovies();
     }
