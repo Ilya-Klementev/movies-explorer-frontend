@@ -50,6 +50,18 @@
   opacity: 80%;
 }
 
+.movies__error {
+  color: #EE3465;
+  margin: 10px 0 5px 0;
+  padding: 0;
+  font-family: 'Inter';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 12.1px;
+  height: 13px;
+  align-self: flex-start;
+}
+
 .movies__search_switch {
   position: relative;
   display: inline-block;

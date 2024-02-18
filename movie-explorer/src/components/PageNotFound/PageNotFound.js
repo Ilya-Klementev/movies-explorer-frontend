@@ -2,12 +2,11 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 
 function PageNotFound({ options }) {
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     options(false);
   }, [options]);
-
-  const navigate = useNavigate(); 
 
   function goBack() {
     navigate(-1, { replace: true });

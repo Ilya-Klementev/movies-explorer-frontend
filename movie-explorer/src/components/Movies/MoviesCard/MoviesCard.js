@@ -1,33 +1,52 @@
-import React, {useState} from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 function MoviesCard( props ) {
-  const [isSaved, setIsSaved] = useState(false);
+  const { movie, onDeleteMovie, onSaveMovie } = props;
+  const location = useLocation();
 
-  function toggleSaveMovie() {
-    setIsSaved(!isSaved);
+  function countingDuration () {
+    const hours = Math.floor( movie.duration / 60);
+    const minutes = movie.duration % 60;
+    const resultDuration = `${hours}ч ${minutes}м`;
+    return resultDuration;
+  }
+  
+  function hundleSaveMovie () {
+    if (movie._id === null) {
+      onSaveMovie(movie);
+    } else {
+      onDeleteMovie(movie);
+    }
+  }
+
+  function hundleDeleteMovie() {
+    onDeleteMovie(movie);
   }
 
   return (
     <div className="movies__card">
       <div className="movies__card_container">
-        <h2 className="movies__card_title">В погоне за бэнкси</h2>
-        <span className="movies__card_time">0ч 42м</span>
+        <h2 className="movies__card_title">{movie.nameRU}</h2>
+        <span className="movies__card_time">{countingDuration()}</span>
       </div>
-      <img 
-        className="movies__card_image" 
-        src={ require('../../../images/card_pic.png') } 
-        alt="Изображение фильма"/>
-      {props.savedPage ? (
+      <a href={movie.trailerLink} target="_blank" rel="noopener noreferrer">
+        <img 
+          className="movies__card_image" 
+          src={ movie.image } 
+          alt="Изображение фильма"/>
+      </a>
+      {(location.pathname === '/saved-movies') ? (
         <button 
           className="movies__card_button-delete"
-          onClick={toggleSaveMovie}
+          onClick={ hundleDeleteMovie }
         ></button>
         ) : (
         <button 
-          className={`movies__card_button ${isSaved ? 'movies__card_button-saved' : ''}`} 
-          onClick={toggleSaveMovie}
+          className={`movies__card_button ${movie._id !== null ? 'movies__card_button-saved' : ''}`} 
+          onClick={ hundleSaveMovie }
         >
-          {isSaved ? '' : 'Сохранить'}
+          {movie._id !== null ? '' : 'Сохранить'}
         </button>
       )}
 

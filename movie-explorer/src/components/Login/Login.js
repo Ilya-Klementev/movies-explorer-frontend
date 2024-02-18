@@ -1,25 +1,33 @@
 import React, { useEffect } from 'react';
 import AuthForm from '../AuthForm/AuthForm';
 
-function Login({ options }) {
+function Login(props) {
+  const {
+    options, 
+    onSubmit, 
+    serverErrorMessage, 
+    isRequestProgress 
+  } = props;
+
 
   useEffect(() => {
     options(false, false, true);
   }, [options]);
 
-  function onSubmit (e) {
-    e.preventDefault();
-    console.log('Вошли!')
+  function handleSubmit (data) {
+    onSubmit(data);
   }
 
   const propsAuthForm = {
     title: "Рады видеть!",
-    name: false,
-    submit: "Войти",
+    isName: false,
+    submitText: "Войти",
     spanLink: "Еще не зарегистрированы?",
     link: "Регистрация",
     linkTo: "/signup",
-    onSubmit
+    onSubmit: handleSubmit,
+    serverErrorMessage: serverErrorMessage,
+    isRequestProgress,
   };
 
   return (

@@ -11,12 +11,15 @@
 .movies__card_container {
   display: flex;
   justify-content: space-between;
-  padding: 18px;
+  padding-left: 18px;
+  padding-right: 18px;
+ align-items: center;
   height: 54px;
   box-sizing: border-box;
 }
 
 .movies__card_title {
+  max-width: 270px;
   margin: 0;
   padding: 0;
   color: #fff;
@@ -24,9 +27,12 @@
   font-size: 15px;
   font-weight: 500;
   line-height: 18px;
+  text-align: start;
+  overflow: hidden;
 }
 
 .movies__card_time {
+  width: 62px;
   margin: 0;
   padding: 0;
   color: #8B8B8B;
@@ -34,10 +40,11 @@
   font-size: 13px;
   font-weight: 400;
   line-height: 18px;
+  text-align: end;
 }
 
 .movies__card_image {
-  max-width: 360px;
+  width: 360px;
   height: 200px;
   cursor: pointer;
 }
@@ -88,7 +95,7 @@
   }
 
   .movies__card_image {
-    max-width: 342px;
+    width: 342px;
     height: 190px;
   }
 }
@@ -100,7 +107,7 @@
   }
 
   .movies__card_image {
-    max-width: 300px;
+    width: 300px;
     height: 168px;
   }
 

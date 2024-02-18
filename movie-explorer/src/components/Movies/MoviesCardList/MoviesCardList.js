@@ -1,45 +1,63 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import MoviesCard from '../MoviesCard/MoviesCard';
-import Preloader from '../Preloader/Preloader';
 
-function MoviesCardList( props ) {
-  const [isPreloader, setIsPreloader] = useState(false);
-  const [moviesCards, setMoviesCards] = useState(Array.from({ length: props.length }));
+function MoviesCardList(props) {
+  const {
+    movies,
+    isCountDisplayedMovies,
+    error,
+    onAddCards,
+    onSaveMovie,
+    onDeleteMovie,
+    stateSearchedMovies,
+  } = props;
 
-  //Проверка работы прелоадера:
-  async function addMoreCard() {
-    setIsPreloader(true);
-    try {
-      const newMovies = await fetchNewMovies(); 
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setMoviesCards(prevMovies => [...prevMovies, ...newMovies]);
-    } catch (error) {
-      console.error('Ошибка добавления новых карточек:', error);
-    } finally {
-      setIsPreloader(false);
+  const location = useLocation();
+
+  const renderMovies = useMemo(() => {
+    if (error) {
+      return <h2 className="movies__cardlist_nothing">{error}</h2>;
     }
-  }
 
-  async function fetchNewMovies() {
-    return Array.from({ length: 6 });
-  }
+    if (movies.length < 1 && stateSearchedMovies.isAllMoviesFetched === true) {
+      return <h2 className="movies__cardlist_nothing">Ничего не найдено</h2>;
+    }
+ 
+    if (stateSearchedMovies.isAllMoviesFetched === true || location.pathname === '/saved-movies') {
+      return movies
+        .sort((a, b) => a.movieId - b.movieId)
+        .slice(0, location.pathname === '/saved-movies' ? Infinity : isCountDisplayedMovies)
+        .map((movie) => {
+          return (
+            <MoviesCard
+              key={movie.movieId}
+              movie={movie}
+              onSaveMovie={onSaveMovie}
+              onDeleteMovie={onDeleteMovie}
+            />
+          );
+        });
+    }
+  }, [movies, isCountDisplayedMovies, location.pathname, stateSearchedMovies.allMovies]);
+  
 
+  function handleAddCard() {
+    onAddCards();
+  }
 
   return (
     <>
       <div className="movies__cardlist">
-        {moviesCards.map(() => (
-          <MoviesCard {...props}/>
-        ))}
+        {renderMovies}
       </div>
-      {isPreloader && <Preloader />}
-      {props.savedPage ? "" :
-      <button
-        className="movies__cardlist_more"
-        onClick={addMoreCard}
-      >
-        Еще
-      </button>}
+      { (location.pathname !== '/movies') || (movies.length <= (isCountDisplayedMovies)) ? "" :
+        <button
+          className="movies__cardlist_more"
+          onClick={ handleAddCard }
+        >
+          Еще
+        </button>}
     </>
   );
 }

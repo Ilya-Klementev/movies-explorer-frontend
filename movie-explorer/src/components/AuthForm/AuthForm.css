@@ -86,6 +86,7 @@
   flex-direction: column;
   margin: 0;
   max-width: 410px;
+  position: relative;
 }
 
 .auth__form_submit {
@@ -94,12 +95,18 @@
   border: none;
   border-radius: 3px;
   height: 45px;
-  margin: 20px 0 16px 0;
+  margin: 125px 0 16px 0;
   color: #fff;
   font-family: 'Inter';
   font-size: 14px;
   line-height: 16.94px;
   font-weight: 500;
+}
+
+.auth__form_submit-disabled{
+  background-color: #F8F8F8;
+  color: #C2C2C2;
+  cursor: not-allowed;
 }
 
 .auth__form_submit:hover {
@@ -128,7 +135,8 @@
 }
 
 .auth__form_server-error {
-  margin: 94px auto 0 auto;
+  position: absolute;
+  margin: 0;
   color:#FF004C;
   padding: 0;
   font-family: 'Inter';
@@ -137,6 +145,9 @@
   line-height: 13px;
   max-width: 396px;
   height: 14px;
+  bottom: 95px;
+  width: 100%;
+  text-align: center;
 }
 
 

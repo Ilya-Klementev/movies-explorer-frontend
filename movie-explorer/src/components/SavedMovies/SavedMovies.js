@@ -1,22 +1,82 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import MoviesCardList from '../Movies/MoviesCardList/MoviesCardList';
+import { searchMovies, handleCheckedFilter } from '../../utils/searchUtil';
 
-function SavedMovies({ options }) {
+function SavedMovies( props ) {
+  const { 
+    options, 
+    onDeleteMovie,
+    searchQuery,
+    setSearchQuery,
+    stateSearchedMovies,
+    getSavedMovies,
+    setIsChecked,
+    isChecked,
+    allUpdatedMovies,
+    isPreloader,
+  } = props
 
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  const [checkedMovies, setCheckedMovies] = useState([]);
+  const [lastQuery, setLastQuery] = useState('');
+
+  //шапка, подвал, цвет шапки
   useEffect(() => {
     options(true, true, true);
   }, [options]);
 
-  const propsMovies = {
-    length: 4,
-    savedPage: true,
+  //получаем сохраненные фильмы
+  useEffect(() => {
+    if (stateSearchedMovies.isSavedMoviesFetched === false ) {
+      getSavedMovies();
+    }
+    setIsChecked(false);
+    setSearchQuery('');
+    // setFilteredMovies(filterMovies());
+  }, []);
+
+  function filterMovies() {
+    const filtredMovies = stateSearchedMovies.allMovies.filter(movie => movie._id !== null);
+    return filtredMovies;
+  }
+
+  useEffect(()=>{
+      setCheckedMovies((prevCheckedMovies) => {
+        const updatedMovies = searchMovies(lastQuery, handleCheckedFilter(isChecked, filterMovies()));
+        setFilteredMovies(updatedMovies);
+        return updatedMovies;
+      });
+  },[isChecked, stateSearchedMovies.allMovies]);
+
+  function handleSubmit(searchQuery, isChecked) {
+    setLastQuery(searchQuery);
+    if (isChecked) {
+        setFilteredMovies(searchMovies(searchQuery, checkedMovies));
+    } else {
+        setFilteredMovies(searchMovies(searchQuery, filterMovies()));
+    }
+  }
+  
+  const propsSearchForm = {
+    onSubmit: handleSubmit,
+    setSearchQuery: setSearchQuery,
+    setIsChecked: setIsChecked,
+    isChecked: isChecked,
+    searchQuery: searchQuery,
+    isPreloader: isPreloader,
+  }
+
+  const propsMoviesCardList = {
+    stateSearchedMovies: stateSearchedMovies,
+    onDeleteMovie: onDeleteMovie,
+    movies: filteredMovies,
   }
 
   return (
     <div className="movies">
-      <SearchForm></SearchForm>
-      <MoviesCardList {...propsMovies}></MoviesCardList>
+      <SearchForm { ...propsSearchForm } />
+      <MoviesCardList { ...propsMoviesCardList } />
     </div>
   );
 }

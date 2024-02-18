@@ -69,7 +69,7 @@
 
 .profile__input:focus {
   background-color: #303030;
-  outline: 3px solid;
+  outline: 1px solid;
   border-radius: 7px;
   padding-right: 8px;
 }
@@ -77,6 +77,7 @@
 .profile__buttons_conteiner{
   display: flex;
   flex-direction: column;
+
 }
 
 .profile__form_edit {
@@ -129,9 +130,10 @@
 .profile__submit_disabled {
   background-color: #F8F8F8;
   color: #C2C2C2;
+  cursor: not-allowed;
 }
 
-.profile__error {
+.profile__error_server {
   color: #FF004C;
   font-family: 'Inter';
   font-size: 11px;
@@ -143,7 +145,21 @@
   padding: 0;
   display: inline-block;
   vertical-align:bottom;
- 
+}
+
+.profile__error_input {
+  color: #FF004C;
+  font-family: 'Inter';
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 13px;
+  width: 100%;
+  height: 13px;
+  margin: 0 0 20px 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align:bottom;
+  text-align: right;
 }
 
 @media screen and (max-width: 880px) {
