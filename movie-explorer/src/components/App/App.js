@@ -21,7 +21,8 @@ function App() {
   const [showHeader, setShowHeader] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
   const [darkBackground, setDarkBackground] = useState(true);
-  const [loggedIn, setloggedIn] = useState(false);
+  const [isTokenTrue, setIsTokenTrue] = useState(localStorage.getItem("jwt"));
+  const [loggedIn, setloggedIn] = useState(isTokenTrue);
   const [currentUser, setCurrentUser] = useState({});
   const [serverErrorMessage, setServerErrorMessage] = useState('');
   const [isPreloader, setIsPreloader] = useState(false);
@@ -30,6 +31,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isRequestProgress, setIsRequestProgress] = useState(false);
+  
   const stateSearchedMovies = JSON.parse(localStorage.getItem('stateSearchedMovies')) || { 
     allMovies: [], 
     isAllMoviesFetched: false,
@@ -50,9 +52,11 @@ function App() {
 
   useEffect(() => {
     handleTokenCheck();
+    console.log(loggedIn);
   }, [loggedIn]);
 
   function handleRegistration(data) {
+    setIsRequestProgress(true);
     api
       .registration(data)
       .then(() => {
@@ -62,10 +66,12 @@ function App() {
       .catch((err) => {
         console.log(`${ errorMessages.regError }${ err }`);
         setServerErrorMessage(err);
-      });
+      })
+      .finally(() => setIsRequestProgress(false));
   }
   
   function handleAuthorization (data) {
+    setIsRequestProgress(true);
     const { name, ...dataWithoutName } = data;
     api
       .authorization({ ...dataWithoutName })
@@ -78,7 +84,8 @@ function App() {
       .catch((err) => {
         console.log(`${ errorMessages.authError }${ err }`);
         setServerErrorMessage(err);
-      });
+      })
+      .finally(() => setIsRequestProgress(false));
   }
 
   function handleTokenCheck() { 
@@ -136,6 +143,7 @@ function App() {
 
   function getAllMovies() {
     setIsPreloader(true);
+    setIsRequestProgress(true);
     apiMovies
       .getMovies()
       .then((movies) => {
@@ -152,7 +160,10 @@ function App() {
         console.log(`${ errorMessages.getMoviesError }${ err }`);
         setIsTextError( errorMessages.serverErrorForUser )
       })
-      .finally(() => setIsPreloader(false))
+      .finally(() => {
+        setIsPreloader(false)
+        setIsRequestProgress(false);
+      })
   }
 
   function getSavedMovies() {
